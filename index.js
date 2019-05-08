@@ -1,5 +1,6 @@
 const express = require("express");
-const uuid = require("uuid");
+//const router = require();
+//const bodyParser = require("body-parser");
 const path = require("path");
 const exphbs = require("express-handlebars");
 const members = require("./Members");
@@ -25,22 +26,14 @@ app.get("/", (req, res) =>
     members
   })
 );
-app.post("/", (req, res) => {
-  const newMember = {
-    id: uuid.v4(),
-    name: req.body.name,
-    email: req.body.email,
-    status: "active"
-  };
-  if (!newMember.name || !newMember.email) {
-    return res.status(400).json({ msg: "Please include a name and Email" });
-  }
-  members.push(newMember);
-  res.json(members);
-});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //set the static folder
 app.use(express.static(path.join(__dirname, "public")));
+//Members API ROute
+app.use("/api/members", require("./routes/api/members"));
 
 const PORT = process.env.PORT || 5000;
 
